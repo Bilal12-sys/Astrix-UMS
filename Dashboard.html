@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="shortcut icon" href="IMAGES/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="Dashbord.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+<div class="app">
+
+
+ <div class="mas">
+
+  <aside id="sidebar">
+    <div class="dot">
+      <div class="imd">
+        <img src="image/logo.png" alt="Logo">
+        <span>Astrix</span>
+      
+      </div>
+        <span class="dots" id="open"><i class="fa-solid fa-bars"></i></span>
+      
+    </div>
+
+    <div class="items">
+        <abbr title="Post"><h4 class="active"><i class="fa-solid fa-tachograph-digital"></i><span>Dashboard</span></h4></abbr>
+      <abbr title="User Profile"><h4><i class="fa-regular fa-user"></i><span>Profile</span></h4></abbr>
+      <abbr title="Users Data"><h4><i class="fa-solid fa-users"></i><span>Users</span></h4></abbr>
+    <abbr title="Setting"><h4><i class="fa-solid fa-gear"></i><span>Setting</span></h4></abbr>
+    </div>
+
+    <div class="logout">
+   <abbr title="Logout"><h4 id="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></h4></abbr>
+    </div>
+  </aside>
+
+
+</div>
+
+<div class="dashboard">
+
+<div class="stats">
+
+    <div class="cards">
+        <div class="row">
+            <div class="icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <div class="content">
+                <h3>Total Users</h3>
+                <span id="tu"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="row">
+            <div class="icon">
+                <i class="fa-solid fa-city"></i>
+            </div>
+
+            <div class="content">
+                <h3>Cities</h3>
+                <span id="tc"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="row">
+            <div class="icon">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+
+            <div class="content">
+                <h3>Professions</h3>
+                <span id="tp"></span>
+            </div>
+        </div>
+    </div>
+
+    
+<section>
+
+
+  <div class="t">
+    <span>Users Table</span>
+    <input type="text" placeholder="Serch User" id="user_serch">
+  </div>
+
+  <table class="info">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>City</th>
+            <th>Profession</th>
+          
+            <th>Action</th>
+        </tr>
+    </thead>
+   
+    <tbody id="usert">
+
+</tbody>
+
+</table>
+
+
+</section>
+
+</div>
+</div>
+
+
+
+  <script type="module" src="Dashboard.js" defer></script>
+</body>
+</html>
