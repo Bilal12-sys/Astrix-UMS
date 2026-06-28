@@ -83,6 +83,7 @@ aside {
     z-index: 1000;
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+   
 }
 
 aside.active {
@@ -400,16 +401,18 @@ abbr {
 .stats {
     display: flex;
     flex:1;
-    gap: 30px;
+    gap: 20px;
     justify-content: center;
     margin-bottom: 20px;
-    
     flex-wrap: wrap;
+     
 }
 
 
+
+
 .cards{
-    width: 330px;
+    width: 320px;
     height: 100px;
     padding: 20px;
     border-radius: 20px;

@@ -1,4 +1,61 @@
 console.log("loaded")
+
+const items = document.querySelectorAll(".items h4");
+
+items.forEach(item => {
+    item.addEventListener("click", () => {
+        // Remove active from all items
+        items.forEach(i => i.classList.remove("active"));
+
+        // Add active to clicked item
+        item.classList.add("active");
+    });
+});
+
+
+function boxes() {
+  const bm = document.createElement("div");
+  const box = document.createElement("div");
+
+  const ut = document.createElement("h2")
+  const ue = document.createElement("h2")
+  const ua = document.createElement("h2")
+  const uc = document.createElement("h2")
+  const up = document.createElement("h2")
+ 
+  bm.classList.add("bm")
+  box.classList.add("box")
+  ut.classList.add("ut")
+  ue.classList.add("ue")
+  ua.classList.add("ua")
+  uc.classList.add("uc")
+  up.classList.add("up")
+
+  box.appendChild(ut)
+  box.appendChild(ue)
+  box.appendChild(ua)
+  box.appendChild(uc)
+  box.appendChild(up)
+
+  bm.appendChild(box)
+  document.body.appendChild(bm);
+
+  return { bm , box };
+}
+
+boxes()
+
+const prof = document.getElementById("prof");
+
+prof.addEventListener('click' , () =>{
+
+})
+
+
+
+
+
+
 import { auth, signOut , collection, getDocs , db} from "./config/firebase.js"
 
 const sb = document.getElementById("sidebar")
@@ -79,7 +136,7 @@ async function getUser() {
                     <td>${data.name || ""}</td>
                     <td>${data.age || ""}</td>
                     <td>${data.city || ""}</td>
-                    <td>${data.profession || ""}</td>
+                    <td>${data.Profession || ""}</td>
 
                     <td class="actions">
                         <button class="view">
@@ -107,3 +164,4 @@ async function getUser() {
 }
 
 getUser();
+
