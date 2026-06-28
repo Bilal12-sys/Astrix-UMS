@@ -1,5 +1,14 @@
 console.log("loaded")
-import { auth, signOut , collection, getDocs , db , doc, getDoc} from "./config/firebase.js"
+
+import {
+    auth,
+    signOut,
+    collection,
+    getDocs,
+    db,
+    doc,
+    getDoc
+} from "../config/firebase.js";
 
 
 function profileloader() {
