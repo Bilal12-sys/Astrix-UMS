@@ -1,5 +1,16 @@
 console.log("loaded")
+import { auth, signOut , collection, getDocs , db , doc, getDoc} from "./config/firebase.js"
 
+
+function profileloader() {
+    const loader = document.createElement("div");
+    loader.innerHTML = "<span></span>";
+    loader.classList.add("ploader");
+
+    document.body.appendChild(loader);
+
+    return loader;
+}
 const items = document.querySelectorAll(".items h4");
 
 items.forEach(item => {
@@ -13,50 +24,137 @@ items.forEach(item => {
 });
 
 
-function boxes() {
-  const bm = document.createElement("div");
-  const box = document.createElement("div");
+function boxes(user) {
+    
+    const bm = document.createElement("div");
+    const box = document.createElement("div");
+    const closeBtn = document.createElement("button");
 
-  const ut = document.createElement("h2")
-  const ue = document.createElement("h2")
-  const ua = document.createElement("h2")
-  const uc = document.createElement("h2")
-  const up = document.createElement("h2")
- 
-  bm.classList.add("bm")
-  box.classList.add("box")
-  ut.classList.add("ut")
-  ue.classList.add("ue")
-  ua.classList.add("ua")
-  uc.classList.add("uc")
-  up.classList.add("up")
+    const imgContainer = document.createElement("div");
+    const profileImg = document.createElement("img");
 
-  box.appendChild(ut)
-  box.appendChild(ue)
-  box.appendChild(ua)
-  box.appendChild(uc)
-  box.appendChild(up)
+    const infoContainer = document.createElement("div");
+    const ut = document.createElement("h2");
+    const ue = document.createElement("div");
+    const ua = document.createElement("div");
+    const uc = document.createElement("div");
+    const up = document.createElement("div");
 
-  bm.appendChild(box)
-  document.body.appendChild(bm);
+    bm.className = "bm";
+    box.className = "box";
+    closeBtn.className = "close-btn";
+    imgContainer.className = "img-container";
+    profileImg.className = "profile-img";
+    infoContainer.className = "info-container";
 
-  return { bm , box };
+    ut.className = "ut";
+    ue.className = "info-row";
+    ua.className = "info-row";
+    uc.className = "info-row";
+    up.className = "info-row";
+
+    closeBtn.innerHTML = "&times;";
+
+    profileImg.src = user.image && user.image.trim() !== ""
+        ? user.image
+        : "image/unknown.png";
+
+    profileImg.alt = "Profile Picture";
+
+    ut.textContent = user.name || "Unknown User";
+
+    ue.innerHTML = `
+    <span class="label">
+        <i class="fa-solid fa-envelope"></i>
+    </span>
+    <span class="value">${user.email || "-"}</span>
+`;
+
+ua.innerHTML = `
+    <span class="label">
+        <i class="fa-solid fa-cake-candles"></i>
+    </span>
+    <span class="value">${user.age || "-"}</span>
+`;
+
+uc.innerHTML = `
+    <span class="label">
+        <i class="fa-solid fa-location-dot"></i>
+    </span>
+    <span class="value">${user.city || "-"}</span>
+`;
+
+up.innerHTML = `
+    <span class="label">
+        <i class="fa-solid fa-phone"></i>
+    </span>
+    <span class="value">${user.phone || "-"}</span>
+`;
+
+    imgContainer.appendChild(profileImg);
+    infoContainer.append(ut, ue, ua, uc, up);
+    box.append(closeBtn, imgContainer, infoContainer);
+    bm.appendChild(box);
+
+    document.body.appendChild(bm);
+
+    closeBtn.addEventListener("click", () => {
+        bm.classList.remove("active");
+        bm.remove()
+    });
+
+    bm.addEventListener("click", (e) => {
+        if (e.target === bm) {
+            bm.classList.remove("active");
+             bm.remove()
+        }
+    });
+
+    return { bm, box };
 }
 
-boxes()
+
+
+async function getCurrentUserProfile() {
+    
+    const user = auth.currentUser;
+
+    if (!user) return null;
+
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+        return userSnap.data();
+    }
+
+    return null;
+}
 
 const prof = document.getElementById("prof");
 
-prof.addEventListener('click' , () =>{
+if (prof) {
+    prof.addEventListener("click", async () => {
+        const loader = profileloader();
+        try {
+            const userData = await getCurrentUserProfile();
 
-})
+            if (!userData) return;
+
+            const show = boxes(userData);
+            show.bm.classList.add("active");
+        } catch (err) {
+            console.error(err);
+        } finally {
+            if (loader && typeof loader.remove === 'function') loader.remove();
+        }
+    });
+} else {
+    console.warn("Profile element not found: #prof");
+}
 
 
 
-
-
-
-import { auth, signOut , collection, getDocs , db} from "./config/firebase.js"
 
 const sb = document.getElementById("sidebar")
 const sopen = document.getElementById("open")
@@ -108,17 +206,19 @@ async function getStats() {
 
 getStats();
 
-const usert = document.getElementById("usert");
 
 function showLoader() {
     const loader = document.createElement("div");
-    loader.innerHTML = "<span></span>";
+    loader.innerHTML = "<strong></strong>";
     loader.classList.add("loader");
 
     document.body.appendChild(loader);
 
     return loader;
 }
+
+const usert = document.getElementById("usert");
+
 
 async function getUser() {
     const loader = showLoader();
