@@ -632,7 +632,18 @@ body {
     font-size: 30px;
 }
 
+/* Chrome, Edge, Safari */
+#sage::-webkit-outer-spin-button,
+#sage::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
+/* Firefox */
+#sage {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
 
 
 
