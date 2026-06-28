@@ -1,3 +1,4 @@
+console.log("loaded")
 import { auth, signOut , collection, getDocs , db} from "./config/firebase.js"
 
 const sb = document.getElementById("sidebar")
