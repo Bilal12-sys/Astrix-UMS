@@ -7,9 +7,10 @@ import {
     getDocs,
     db,
     doc,
-    getDoc
+    getDoc,
+    deleteDoc,
+    updateDoc
 } from "../config/firebase.js";
-
 
 function profileloader() {
     const loader = document.createElement("div");
@@ -20,21 +21,18 @@ function profileloader() {
 
     return loader;
 }
+
 const items = document.querySelectorAll(".items h4");
 
 items.forEach(item => {
-    item.addEventListener("click", () => {
-        // Remove active from all items
-        items.forEach(i => i.classList.remove("active"));
-
-        // Add active to clicked item
-        item.classList.add("active");
-    });
-});
-
+    item.addEventListener('click', () => {
+        items.forEach(i => i.classList.remove("active"))
+        item.classList.add("active")
+    })
+})
 
 function boxes(user) {
-    
+
     const bm = document.createElement("div");
     const box = document.createElement("div");
     const closeBtn = document.createElement("button");
@@ -79,21 +77,21 @@ function boxes(user) {
     <span class="value">${user.email || "-"}</span>
 `;
 
-ua.innerHTML = `
+    ua.innerHTML = `
     <span class="label">
         <i class="fa-solid fa-cake-candles"></i>
     </span>
     <span class="value">${user.age || "-"}</span>
 `;
 
-uc.innerHTML = `
+    uc.innerHTML = `
     <span class="label">
         <i class="fa-solid fa-location-dot"></i>
     </span>
     <span class="value">${user.city || "-"}</span>
 `;
 
-up.innerHTML = `
+    up.innerHTML = `
     <span class="label">
         <i class="fa-solid fa-phone"></i>
     </span>
@@ -101,7 +99,8 @@ up.innerHTML = `
 `;
 
     imgContainer.appendChild(profileImg);
-    infoContainer.append(ut, ue, ua, uc, up);
+    imgContainer.appendChild(ut);
+    infoContainer.append(ue, ua, uc, up);
     box.append(closeBtn, imgContainer, infoContainer);
     bm.appendChild(box);
 
@@ -115,17 +114,15 @@ up.innerHTML = `
     bm.addEventListener("click", (e) => {
         if (e.target === bm) {
             bm.classList.remove("active");
-             bm.remove()
+            bm.remove()
         }
     });
 
     return { bm, box };
 }
 
-
-
 async function getCurrentUserProfile() {
-    
+
     const user = auth.currentUser;
 
     if (!user) return null;
@@ -162,9 +159,6 @@ if (prof) {
     console.warn("Profile element not found: #prof");
 }
 
-
-
-
 const sb = document.getElementById("sidebar")
 const sopen = document.getElementById("open")
 
@@ -179,7 +173,7 @@ if (logout) {
         signOut(auth)
             .then(() => {
                 console.log("User signed out successfully");
-                
+
                 location.href = "index.html"
             })
             .catch((error) => {
@@ -192,8 +186,7 @@ if (logout) {
 
 const tuser = document.getElementById("tu")
 const tcity = document.getElementById("tc")
-const  tp = document.getElementById("tp")
-
+const tp = document.getElementById("tp")
 
 async function getStats() {
     const snapshot = await getDocs(collection(db, "users"));
@@ -215,7 +208,6 @@ async function getStats() {
 
 getStats();
 
-
 function showLoader() {
     const loader = document.createElement("div");
     loader.innerHTML = "<strong></strong>";
@@ -228,7 +220,6 @@ function showLoader() {
 
 const usert = document.getElementById("usert");
 
-
 async function getUser() {
     const loader = showLoader();
 
@@ -237,11 +228,11 @@ async function getUser() {
 
         const snapshot = await getDocs(collection(db, "users"));
 
-        snapshot.forEach((doc) => {
-            const data = doc.data();
+        snapshot.forEach((userDoc) => {
+            const data = userDoc.data();
 
             usert.innerHTML += `
-                <tr>
+                <tr data-id="${userDoc.id}">
                     <td>${data.name || ""}</td>
                     <td>${data.age || ""}</td>
                     <td>${data.city || ""}</td>
@@ -263,14 +254,133 @@ async function getUser() {
                 </tr>
             `;
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
-    }
-    finally {
+    } finally {
         loader.remove();
     }
 }
 
 getUser();
 
+const searchInput = document.getElementById("user_serch");
+
+if (searchInput) {
+    searchInput.addEventListener("input", () => {
+        const term = searchInput.value.trim().toLowerCase();
+        const rows = usert.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            const name = row.children[0]?.textContent.toLowerCase() || "";
+            const city = row.children[2]?.textContent.toLowerCase() || "";
+            const profession = row.children[3]?.textContent.toLowerCase() || "";
+
+            const match = name.includes(term) || city.includes(term) || profession.includes(term);
+
+            row.style.display = match ? "" : "none";
+        });
+    });
+}
+
+document.addEventListener("click", async (e) => {
+    const viewBtn = e.target.closest(".view");
+    const editBtn = e.target.closest(".edit");
+    const deleteBtn = e.target.closest(".delete");
+    const saveBtn = e.target.closest(".save");
+
+    if (viewBtn) {
+        const loader = profileloader();
+
+        const row = viewBtn.closest("tr");
+        const userId = row.dataset.id;
+
+        try {
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+
+                const show = boxes(userData);
+                show.bm.classList.add("active");
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            if (loader && typeof loader.remove === 'function') loader.remove();
+        }
+    }
+
+    if (editBtn) {
+
+        const row = editBtn.closest("tr");
+        const cells = row.querySelectorAll("td");
+
+        const name = cells[0].textContent;
+        const age = cells[1].textContent;
+        const city = cells[2].textContent;
+        const profession = cells[3].textContent;
+
+        cells[0].innerHTML = `<input type="text" value="${name}" class="edit-input">`;
+        cells[1].innerHTML = `<input type="number" value="${age}" class="edit-input">`;
+        cells[2].innerHTML = `<input type="text" value="${city}" class="edit-input">`;
+        cells[3].innerHTML = `<input type="text" value="${profession}" class="edit-input">`;
+
+        editBtn.classList.remove("edit");
+        editBtn.classList.add("save");
+
+        editBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i>`;
+    }
+
+    if (saveBtn) {
+        const loader = profileloader();
+        const row = saveBtn.closest("tr");
+        const userId = row.dataset.id;
+
+        const inputs = row.querySelectorAll(".edit-input");
+
+        const updatedData = {
+            name: inputs[0].value,
+            age: inputs[1].value,
+            city: inputs[2].value,
+            Profession: inputs[3].value
+        };
+
+        try {
+            await updateDoc(doc(db, "users", userId), updatedData);
+
+            row.children[0].textContent = updatedData.name;
+            row.children[1].textContent = updatedData.age;
+            row.children[2].textContent = updatedData.city;
+            row.children[3].textContent = updatedData.Profession;
+
+            saveBtn.classList.remove("save");
+            saveBtn.classList.add("edit");
+
+            saveBtn.innerHTML = `<i class="fa-solid fa-pen"></i>`;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            if (loader && typeof loader.remove === 'function') loader.remove();
+        }
+    }
+
+    if (deleteBtn) {
+        const row = deleteBtn.closest("tr");
+        const userId = row.dataset.id;
+
+        const confirmDelete = confirm("Are you sure you want to delete this user?");
+
+        if (!confirmDelete) return;
+
+        try {
+            await deleteDoc(doc(db, "users", userId));
+
+            row.remove();
+
+            console.log("User deleted successfully");
+        } catch (error) {
+            console.error(error);
+        }
+    }
+});

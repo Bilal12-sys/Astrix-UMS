@@ -14,7 +14,9 @@ import {
   setDoc,
   collection, 
   getDocs,
-  getDoc
+  getDoc,
+  deleteDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 // Your web app's Firebase configuration
@@ -44,6 +46,8 @@ export {
   setDoc,
   collection, 
   getDocs,
-   getDoc
+   getDoc,
+    deleteDoc,
+    updateDoc
 
 };
