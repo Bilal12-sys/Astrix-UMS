@@ -10,7 +10,7 @@ import {
     getDoc,
     deleteDoc,
     updateDoc
-} from "../config/firebase.js";
+} from "./config/firebase.js";
 
 function profileloader() {
     const loader = document.createElement("div");
