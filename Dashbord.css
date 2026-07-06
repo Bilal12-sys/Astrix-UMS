@@ -360,6 +360,10 @@ abbr {
     overflow-y: auto;
 }
 
+.dashboard::-webkit-scrollbar{
+    display: none;
+}
+
 .stats {
     display: flex;
     flex: 1;
@@ -500,6 +504,7 @@ section {
     transition: all .3s ease;
 }
 
+
 #user_serch::placeholder {
     color: rgba(255, 255, 255, .45);
 }
@@ -510,6 +515,66 @@ section {
     transform: translateY(-1px);
 }
 
+.cf{
+    appearance: base-select;
+    padding: 5px;
+    border: 1px solid #00b4d8;
+     background: rgba(4, 15, 35, 0.9);
+
+    font-size: 15px;
+}
+
+.cf:hover{
+    box-shadow: 0px 0px 8px #00b4d8;
+}
+::picker(select){
+    appearance: base-select;
+     background: rgba(4, 15, 35, 0.9);
+    border: 1px solid #00b4d8;
+    border-radius: 12px;
+    color: white;
+    padding: 5px;
+    height: 200px;
+    margin: 2px  ;
+    
+}
+::picker(select)::-webkit-scrollbar{
+    width: 4px;
+}
+
+::picker(select)::-webkit-scrollbar-track{
+    background: rgba(255,255,255,.03);
+    border-radius: 20px;
+}
+
+::picker(select)::-webkit-scrollbar-thumb{
+    background: #00b4d86b;
+    border-radius: 12px;
+    border: 1px solid rgba(0,212,255,.25);
+}
+
+::picker(select)::-webkit-scrollbar-thumb:hover{
+    background: #00b4d834;
+
+}
+
+select::picker-icon{
+    font-size: 14px;
+    align-content: center;
+    color: white;
+    transition: .3s all;
+}
+
+select:open::picker-icon{
+   color: #00b4d8;
+   rotate: 180deg;
+}
+
+select option:checked{
+    background: #00b4d830;
+    border: 1px solid #00b4d884;
+    border-radius: 5px;
+}
 .info {
     display: table;
     color: white;
@@ -1050,11 +1115,16 @@ section {
     }
 
     #user_serch {
-        width: 90%;
+        width: 50%;
+    }
+
+    .loader strong{
+        top: 55%;
     }
 
     .t {
-        justify-content: center;
+        justify-content: space-between;
+        flex-direction: row;
     }
 
     .table-scroll {
@@ -1220,3 +1290,4 @@ section {
         font-size: 16px;
     }
 }
+

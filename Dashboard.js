@@ -1,16 +1,6 @@
 console.log("loaded")
 
-import {
-    auth,
-    signOut,
-    collection,
-    getDocs,
-    db,
-    doc,
-    getDoc,
-    deleteDoc,
-    updateDoc
-} from "./config/firebase.js";
+import { auth, signOut, collection, getDocs, db, doc, getDoc, deleteDoc, updateDoc, query, where } from "./config/firebase.js";
 
 function profileloader() {
     const loader = document.createElement("div");
@@ -219,14 +209,25 @@ function showLoader() {
 }
 
 const usert = document.getElementById("usert");
+const cf = document.getElementById("cf")
 
 async function getUser() {
     const loader = showLoader();
 
     try {
         usert.innerHTML = "";
+       const selectedCity = cf ? cf.value : "All cities";
 
-        const snapshot = await getDocs(collection(db, "users"));
+       let snapshot;
+        snapshot = await getDocs(collection(db, "users"));
+
+          if(selectedCity === "All cities" || selectedCity === ""){
+            snapshot = await getDocs(collection(db, "users"));
+          }else{
+            const q = query(collection(db, "users"), where("city", "==", selectedCity));
+            snapshot = await getDocs(q);
+          }
+        
 
         snapshot.forEach((userDoc) => {
             const data = userDoc.data();
@@ -255,13 +256,25 @@ async function getUser() {
             `;
         });
     } catch (error) {
-        console.error(error);
+        console.warn("Error Fatching users");
     } finally {
-        loader.remove();
+       if (loader && typeof loader.remove === 'function') loader.remove();
     }
 }
 
-getUser();
+
+
+
+
+if(cf){
+    cf.addEventListener("change" , () => {
+        getUser()
+    })
+}else {
+    console.warn("Dropdown selector #cf not found!");
+}
+
+ getUser()
 
 const searchInput = document.getElementById("user_serch");
 
